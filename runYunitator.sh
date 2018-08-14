@@ -34,6 +34,7 @@ mkdir -p $dirname/Yunitemp/
 ./extract-htk-vm2.sh $1
 
 # then confidences
-python diarize.py $dirname/Yunitemp/$basename.htk $dirname/Yunitemp/$basename.rttm
+python diarize.py $dirname/Yunitemp/$basename.htk $dirname/Yunitemp/$basename.rttm.sorted
+sort -V -k3 $dirname/Yunitemp/$basename.rttm.sorted > $dirname/Yunitemp/$basename.rttm
 
 
