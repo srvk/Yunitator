@@ -25,4 +25,13 @@ SPEAKER	test	1	1.9	1.6	<NA>	<NA>	SIL	<NA>	<NA>
 SPEAKER	test	1	0.2	1.7	<NA>	<NA>	CHI	<NA>	<NA>
 ```
 
+## More Details
+Yunitator produces these 3 classes (plus Silence):
+```
+CHI
+FEM
+MAL
+SIL
+```
+
 
