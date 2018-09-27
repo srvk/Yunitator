@@ -15,6 +15,11 @@ dirname=$(dirname "$1")
 extension="${filename##*.}"
 basename="${filename%.*}"
 
+# create output file
+outfile=$dirname/$basename.yuniSeg.rttm
+rm -f $outfile
+touch $outfile
+
 # this is set in user's login .bashrc
 export PATH=/home/${USER}/anaconda/bin:$PATH
 
@@ -64,7 +69,7 @@ while read line; do
       sort -V -k3 $segments/Yunitemp/$tbasename.rttm.sorted | head -n -1 > $segments/Yunitemp/$tbasename.rttm
 
       segClass=`python maxClass.py $segments/Yunitemp/$tbasename.rttm`
-      echo -e $col1"\t"$col2"\t"$col3"\t"$start"\t"$dur"\t"$col6"\t"$col7"\t"$segClass"\t"$col9
+      echo -e $col1"\t"$col2"\t"$col3"\t"$start"\t"$dur"\t"$col6"\t"$col7"\t"$segClass"\t"$col9 >> $outfile
   fi
 done < $2
 
