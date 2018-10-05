@@ -36,10 +36,12 @@ SIL
 
 ## YuniSegs
 
-This is a way of running Yunitator but you give it a RTTM file containing already-computed SAD segments. It runs Yunitator repeatedly iterating over all segments, and outputs the majority class for each segment in an RTTM file with extension `.yuniSegs.rttm`, with the same segments as the input RTTM (unless they were 0 duration)
-It accepts 2 parameters, a WAV file, and an RTTM file, e.g:
+This is a way of running Yunitator but you give it a RTTM file containing already-computed SAD segments. It runs Yunitator repeatedly iterating over all segments, and outputs the majority class for each segment in an RTTM file, name based on the input WAV filename, with extension `.yuniSegs.rttm`. IT has the same segments as the input RTTM (unless they were 0 duration).
+YuniSegs accepts 2 parameters, a WAV file, and an RTTM file, e.g:
 ```
 ~/Yunitator/runYuniSegs.sh /vagrant/test2.wav /vagrant/test2.rttm
 ```
 It now accepts a 3rd parameter, the string "SkipSIL", which causes it to output a SIL segment for any segment marked as such in the input SAD RTTM. This could speed processing, and eliminate long segments marked as silence that might otherwise bog down Yunitator, and should really not be processed.
+
+Full Disclosure: output file
 
