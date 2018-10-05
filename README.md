@@ -34,4 +34,11 @@ MAL
 SIL
 ```
 
+## YuniSegs
+
+This is a way of running Yunitator but you give it a RTTM file containing already-computed SAD segments. It runs Yunitator repeatedly iterating over all segments, and outputs the majority class for each segment in an RTTM file with extension `.yuniSegs.rttm`, with the same segments as the input RTTM (unless they were 0 duration)
+It accepts 2 parameters, a WAV file, and an RTTM file, e.g:
+```
+~/Yunitator/runYuniSegs.sh /vagrant/test2.wav /vagrant/test2.rttm
+```
 
