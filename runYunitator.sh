@@ -17,7 +17,7 @@ extension="${filename##*.}"
 basename="${filename%.*}"
 
 # this is set in user's login .bashrc
-#export PATH=/home/${user}/anaconda/bin:$PATH
+export PATH=/home/${USER}/anaconda/bin:$PATH
 
 if [ $# -ne 1 ]; then
   echo "Usage: runYunitator.sh <audiofile>"
