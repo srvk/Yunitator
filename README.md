@@ -41,4 +41,5 @@ It accepts 2 parameters, a WAV file, and an RTTM file, e.g:
 ```
 ~/Yunitator/runYuniSegs.sh /vagrant/test2.wav /vagrant/test2.rttm
 ```
+It now accepts a 3rd parameter, the string "SkipSIL", which causes it to output a SIL segment for any segment marked as such in the input SAD RTTM. This could speed processing, and eliminate long segments marked as silence that might otherwise bog down Yunitator, and should really not be processed.
 
