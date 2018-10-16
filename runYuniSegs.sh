@@ -94,4 +94,4 @@ while read line; do
 done < $2
 
 # maybe delete the segments, yes? audio files can get big
-#rm -rf $segments/*
+rm -rf $segments/*
