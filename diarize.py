@@ -40,7 +40,6 @@ cls_ids, starts = (~output[:, :-1] & output[:, 1:]).nonzero()
 _, ends = (output[:, :-1] & ~output[:, 1:]).nonzero()
 
 key = os.path.splitext(os.path.basename(OUTPUT_FILE))[0]
-print(os.path.basename(OUTPUT_FILE))
 with open(OUTPUT_FILE, 'w') as f:
     for cls, start, end in zip(cls_ids, starts, ends):
         f.write('SPEAKER %s 1 %.1f %.1f <NA> <NA> %s <NA> <NA>\n' % \
