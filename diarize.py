@@ -1,5 +1,5 @@
 import sys, os, os.path
-sys.path.append(os.path.expanduser("~/G/coconut"))
+sys.path.append(os.path.expanduser("G/coconut"))
 from fileutils.htk import *
 import torch
 import torch.nn as nn
@@ -42,5 +42,5 @@ _, ends = (output[:, :-1] & ~output[:, 1:]).nonzero()
 key = os.path.splitext(os.path.basename(OUTPUT_FILE))[0]
 with open(OUTPUT_FILE, 'w') as f:
     for cls, start, end in zip(cls_ids, starts, ends):
-        f.write('SPEAKER %s 1 %.1f %.1f <NA> <NA> %s <NA> <NA>\n' % \
+        f.write('SPEAKER\t%s\t1\t%.1f\t%.1f\t<NA>\t<NA>\t%s\t<NA>\t<NA>\n' % \
             (key, start * FRAME_LEN, (end - start) * FRAME_LEN, class_names[cls]))
