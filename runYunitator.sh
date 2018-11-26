@@ -27,7 +27,7 @@ for f in `ls $1/*.wav`; do
     ./extract-htk-vm2.sh $f
 done
 
-python /home/vagrant/Yunified/yunified.py yunitator $1
+python yunified.py yunitator $1 2000
 for f in `ls $1/feature/*.rttm.sorted`; do
     filename=$(basename "$f")
     basename="${filename%.*}"
