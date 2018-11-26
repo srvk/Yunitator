@@ -12,11 +12,11 @@
 # ---------------------------------------------------------------------
 
 
-RNNPATH='~/OpenSAT/SSSF/code/predict/RNN'
+RNNPATH='~/repos/OpenSAT/SSSF/code/predict/RNN'
 TOOLSPATH="G/coconut"
-NNET='~/OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
-PCAMATRIX='~/OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
-SCALINGFACTORS='~/OpenSAT/SSSF/code/predict/model/noiseme.old/scale.pkl'
+NNET='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
+PCAMATRIX='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
+SCALINGFACTORS='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/scale.pkl'
 
 
 # ---------------------------------------------------------------------
