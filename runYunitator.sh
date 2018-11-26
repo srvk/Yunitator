@@ -10,14 +10,7 @@ SCRIPT=$(readlink -f $0)
 # Absolute path this script is in. /home/user/bin
 BASEDIR=`dirname $SCRIPT`
 
-
-filename=$(basename "$1")
-dirname=$(dirname "$1")
-extension="${filename##*.}"
-basename="${filename%.*}"
-
 # this is set in user's login .bashrc
-export PATH=/home/${USER}/anaconda/bin:$PATH
 
 if [ $# -ne 1 ]; then
   echo "Usage: runYunitator.sh <audiofile>"
@@ -28,13 +21,16 @@ fi
 cd $BASEDIR
 
 # make output folder for features, below input folder
-mkdir -p $dirname/Yunitemp/
+mkdir -p $1/feature/
 
-# first features
-./extract-htk-vm2.sh $1
+for f in `ls $1/*.wav`; do
+    ./extract-htk-vm2.sh $f
+done
 
-# then confidences
-python diarize.py $dirname/Yunitemp/$basename.htk $dirname/Yunitemp/$basename.rttm.sorted
-sort -V -k3 $dirname/Yunitemp/$basename.rttm.sorted > $dirname/Yunitemp/$basename.rttm
-
-
+python /home/vagrant/Yunified/yunified.py yunitator $1
+for f in `ls $1/feature/*.rttm.sorted`; do
+    filename=$(basename "$f")
+    basename="${filename%.*}"
+    
+    sort -V -k3 $f > $1/feature/$basename   
+done
