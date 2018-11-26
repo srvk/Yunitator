@@ -17,7 +17,6 @@ TOOLSPATH="G/coconut"
 NNET='~/OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
 PCAMATRIX='~/OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
 SCALINGFACTORS='~/OpenSAT/SSSF/code/predict/model/noiseme.old/scale.pkl'
-YUNITATORPATH='~/Yunitator'
 
 
 # ---------------------------------------------------------------------
@@ -40,8 +39,6 @@ from fileutils.htk import readHtk
 
 sys.path.append(os.path.expanduser(RNNPATH))
 from RNN import RNN
-
-sys.path.append(os.path.expanduser(YUNITATORPATH))
 from Net import Net
 
 
