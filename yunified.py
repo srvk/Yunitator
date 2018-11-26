@@ -112,7 +112,7 @@ for file in os.listdir(INPUT_DIR+"/feature"):
     # noisemes needs a variable to remember the last timestep when chunking
     last_t = 0  
     chunks = 0
-    for feat in readHtk(INPUT_DIR+"/feature/"+file, HTK_chunksize, preSamples):
+    for feat in readHtk(INPUT_DIR+"/feature/"+file, HTK_CHUNKSIZE, preSamples):
 
         if SCRIPT == "yunitator":
             feature = pca(feat)
@@ -130,7 +130,7 @@ for file in os.listdir(INPUT_DIR+"/feature"):
             with open(OUTPUT_DIR+"/"+filename+".rttm.sorted", 'a') as f:
                 for cls, start, end in zip(cls_ids, starts, ends):
                     f.write('SPEAKER\t%s\t1\t%.1f\t%.1f\t<NA>\t<NA>\t%s\t<NA>\t<NA>\n' % \
-                        (filename+".rttm", (start+(chunks*HTK_chunksize)) * 0.1, (end - start) * 0.1, class_names[cls]))
+                        (filename+".rttm", (start+(chunks*HTK_CHUNKSIZE)) * 0.1, (end - start) * 0.1, class_names[cls]))
                 chunks += 1
         
 
