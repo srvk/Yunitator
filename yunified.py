@@ -58,9 +58,11 @@ except IndexError:
 
 # Prepare output directories
 if SCRIPT == "yunitator":
-    OUTPUT_DIR = INPUT_DIR+"/feature"
+    OUTPUT_DIR = INPUT_DIR
+    INPUT_DIR += "/Yunitempt"
 elif SCRIPT == "noisemes":
     OUTPUT_DIR = INPUT_DIR + "/hyp_sum"
+    INPUT_DIR += "/feature"
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
 
@@ -104,7 +106,7 @@ if SCRIPT == "yunitator":
 elif SCRIPT == "noisemes":
     preSamples = 30 
 
-for file in os.listdir(INPUT_DIR+"/feature"):
+for file in os.listdir(INPUT_DIR):
     # Load input feature and predict
     filename, extension = os.path.splitext(os.path.split(file)[1])
     conf = {}
@@ -112,7 +114,7 @@ for file in os.listdir(INPUT_DIR+"/feature"):
     # noisemes needs a variable to remember the last timestep when chunking
     last_t = 0  
     chunks = 0
-    for feat in readHtk(INPUT_DIR+"/feature/"+file, HTK_CHUNKSIZE, preSamples):
+    for feat in readHtk(INPUT_DIR+"/"+file, HTK_CHUNKSIZE, preSamples):
 
         if SCRIPT == "yunitator":
             feature = pca(feat)
