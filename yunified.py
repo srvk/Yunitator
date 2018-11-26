@@ -58,8 +58,8 @@ except IndexError:
 
 # Prepare output directories
 if SCRIPT == "yunitator":
+    INPUT_DIR += "/Yunitemp"
     OUTPUT_DIR = INPUT_DIR
-    INPUT_DIR += "/Yunitempt"
 elif SCRIPT == "noisemes":
     OUTPUT_DIR = INPUT_DIR + "/hyp_sum"
     INPUT_DIR += "/feature"
