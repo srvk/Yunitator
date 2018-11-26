@@ -13,7 +13,7 @@ basename="${filename%.*}"
 FEATURE_NAME=med # arbitrary - just a name
 INPUT=$1
 CONFIG_FILE=MED_2s_100ms_htk.conf
-OUTPUT_DIR=$dirname/Yunitemp/
+OUTPUT_DIR=$dirname/feature/
 OPENSMILE=SMILExtract
 
 mkdir -p $OUTPUT_DIR
