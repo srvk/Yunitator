@@ -17,7 +17,7 @@ TOOLSPATH="G/coconut"
 NNET='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
 PCAMATRIX='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
 SCALINGFACTORS='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/scale.pkl'
-NOISEMES_CLASSES='~/repos/OpenSAT/noisemeclasses_sum.txt'
+NOISEMES_CLASSES='/home/vagrant/repos/OpenSAT/noisemeclasses_sum.txt'
 
 
 # ---------------------------------------------------------------------
