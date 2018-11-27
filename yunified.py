@@ -12,12 +12,10 @@
 # ---------------------------------------------------------------------
 
 
-RNNPATH='~/repos/OpenSAT/SSSF/code/predict/RNN'
+RNNPATH='OpenSAT/SSSF/code/predict/RNN'
 TOOLSPATH="G/coconut"
-NNET='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
-PCAMATRIX='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
-SCALINGFACTORS='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/scale.pkl'
-NOISEMES_CLASSES='/home/vagrant/repos/OpenSAT/noisemeclasses_sum.txt'
+SCALINGFACTORS='OpenSAT/SSSF/code/predict/model/noiseme.old/scale.pkl'
+NOISEMES_CLASSES='OpenSAT/noisemeclasses_sum.txt'
 
 
 # ---------------------------------------------------------------------
@@ -48,6 +46,10 @@ from Net import Net
 # ---------------------------------------------------------------------
 
 
+# Script options
+YUNITATOR = 'yunitator'
+NOISEMES = 'noisemes'
+
 # Args
 try:
     SCRIPT = sys.argv[1]  # Which script to run [yunitator, noisemes]
@@ -57,11 +59,19 @@ except IndexError:
     print("WRONG NUMBER INPUTS")
     exit()
 
+# Choose Matrix variables
+if SCRIPT == YUNITATOR:
+    PCAMATRIX = 'Yunitator/pca-self.pkl'
+    NNET = 'Yunitator/model.pt'
+elif SCRIPT == NOISEMES:
+    PCAMATRIX = 'OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
+    NNET='OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
+
 # Prepare output directories
-if SCRIPT == "yunitator":
+if SCRIPT == YUNITATOR:
     INPUT_DIR += "/Yunitemp"
     OUTPUT_DIR = INPUT_DIR
-elif SCRIPT == "noisemes":
+elif SCRIPT == NOISEMES:
     OUTPUT_DIR = INPUT_DIR + "/hyp_sum"
     INPUT_DIR += "/feature"
     if not os.path.exists(OUTPUT_DIR):
@@ -69,18 +79,18 @@ elif SCRIPT == "noisemes":
 
 
 # Load neural network
-if SCRIPT == "yunitator":
+if SCRIPT == YUNITATOR:
     net = Net(50, 200, 4) #.cuda()
-    net.load_state_dict(torch.load('model.pt', map_location = lambda storage, loc: storage))
-elif SCRIPT == "noisemes":
+    net.load_state_dict(torch.load(NNET, map_location = lambda storage, loc: storage))
+elif SCRIPT == NOISEMES:
     net = RNN(filename = os.path.expanduser(NNET))
 
 
 # Get class names
 # noisemeclasses_sum.txt contains class name strings, one per line
-if SCRIPT == "yunitator":
+if SCRIPT == YUNITATOR:
     class_names = ['SIL', 'CHI', 'MAL', 'FEM']
-elif SCRIPT == "noisemes":
+elif SCRIPT == NOISEMES:
     class_names = []    
     classfile = open(NOISEMES_CLASSES, 'rb')
     for line in classfile:
@@ -88,11 +98,11 @@ elif SCRIPT == "noisemes":
 
 
 # Load PCA matrix and scaling factors
-if SCRIPT == "yunitator":
-    with open('pca-self.pkl', 'rb') as f:
+if SCRIPT == YUNITATOR:
+    with open(PCAMATRIX, 'rb') as f:
         data = cPickle.load(f, encoding="latin1")
     mask, mu, sigma, V, w, b = data['mask'], data['mu'], data['sigma'], data['V'], data['w'], data['b']
-elif SCRIPT == "noisemes":
+elif SCRIPT == NOISEMES:
     with open(os.path.expanduser(PCAMATRIX), 'rb') as f:
         locals().update(cPickle.load(f, encoding="latin1"))
         with open(os.path.expanduser(SCALINGFACTORS), 'rb') as f:
@@ -102,9 +112,9 @@ pca = lambda feat: ((feat[:, mask] - mu) / sigma).dot(V) * w + b
 
 # These are chunking parameters.
 # ex: HTK_chunksize = 2000
-if SCRIPT == "yunitator":
+if SCRIPT == YUNITATOR:
     preSamples = 0
-elif SCRIPT == "noisemes":
+elif SCRIPT == NOISEMES:
     preSamples = 30 
 
 for file in os.listdir(INPUT_DIR):
@@ -117,7 +127,7 @@ for file in os.listdir(INPUT_DIR):
     chunks = 0
     for feat in readHtk(INPUT_DIR+"/"+file, HTK_CHUNKSIZE, preSamples):
 
-        if SCRIPT == "yunitator":
+        if SCRIPT == YUNITATOR:
             feature = pca(feat)
             input = Variable(torch.from_numpy(numpy.expand_dims(feature, 0).astype('float32'))) #.cuda()
             input = pack_padded_sequence(input, [len(feature)], batch_first = True)
@@ -137,7 +147,7 @@ for file in os.listdir(INPUT_DIR):
                 chunks += 1
         
 
-        elif SCRIPT == "noisemes":
+        elif SCRIPT == NOISEMES:
             feature = pca(feat).astype('float32')
             x = feature.reshape((1,) + feature.shape)
             m = numpy.ones(x.shape[:-1], dtype='int32')

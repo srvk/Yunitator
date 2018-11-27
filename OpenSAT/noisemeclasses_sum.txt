@@ -1,0 +1,17 @@
+background
+speech
+mumble
+singing
+music_sing
+music
+human
+cheer
+crowd
+animal
+engine
+noise_ongoing
+noise_pulse
+noise_tone
+noise_nature
+white_noise
+radio

@@ -1,7 +1,7 @@
 # Use OpenSMILE 2.1.0 only
 
 if [ $# -lt 1 ]; then
-  echo "USAGE: extract-htk.sh <INPUT FILE>"
+  echo "USAGE: extract-htk.sh <INPUT FILE> <TEMP FOLDER>"
   exit 1
 fi
 
@@ -12,8 +12,9 @@ basename="${filename%.*}"
 
 FEATURE_NAME=med # arbitrary - just a name
 INPUT=$1
+TEMP=$2
 CONFIG_FILE=MED_2s_100ms_htk.conf
-OUTPUT_DIR=$dirname/Yunitemp/
+OUTPUT_DIR=$dirname/$TEMP/
 OPENSMILE=SMILExtract
 
 mkdir -p $OUTPUT_DIR
