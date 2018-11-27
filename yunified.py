@@ -17,6 +17,7 @@ TOOLSPATH="G/coconut"
 NNET='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
 PCAMATRIX='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
 SCALINGFACTORS='~/repos/OpenSAT/SSSF/code/predict/model/noiseme.old/scale.pkl'
+NOISEMES_CLASSES='~/repos/OpenSAT/noisemeclasses_sum.txt'
 
 
 # ---------------------------------------------------------------------
@@ -81,7 +82,7 @@ if SCRIPT == "yunitator":
     class_names = ['SIL', 'CHI', 'MAL', 'FEM']
 elif SCRIPT == "noisemes":
     class_names = []    
-    classfile = open("noisemeclasses_sum.txt", 'rb')
+    classfile = open(NOISEMES_CLASSES, 'rb')
     for line in classfile:
         class_names.append(line.decode('utf-8').rstrip('\n'))
 
