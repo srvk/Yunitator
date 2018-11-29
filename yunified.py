@@ -142,8 +142,8 @@ for file in os.listdir(INPUT_DIR):
             #key = os.path.splitext(os.path.basename(YUNITATOR_OUTPUT_FILE))[0]
             with open(OUTPUT_DIR+"/"+filename+".rttm.sorted", 'a') as f:
                 for cls, start, end in zip(cls_ids, starts, ends):
-                    f.write('SPEAKER %s 1 %.1f %.1f <NA> <NA> %s <NA> <NA> ' % \
-                        (filename+".rttm", (start+(chunks*HTK_CHUNKSIZE)) * 0.1, (end - start) * 0.1, class_names[cls]))
+                    f.write("SPEAKER {} 1 {:.1f} {:.1f} <NA> <NA> {} <NA> <NA> ".format(
+                        filename+".rttm", (start+(chunks*HTK_CHUNKSIZE)) * 0.1, (end - start) * 0.1, class_names[cls]))
                 chunks += 1
         
 
@@ -193,7 +193,7 @@ for file in os.listdir(INPUT_DIR):
                         if class_names[most_likely[t-1]] == "speech":
                             # get duration of class
                             t_end = time_frame[t]
-                            lab.write(u"{} {} speech\n".format(t_start+(0.1*chunks), t_end+(0.1*chunks)))
+                            lab.write(u"{:.1f} {:.1f} speech\n".format(t_start+(0.1*chunks), t_end+(0.1*chunks)))
                             t_start = time_frame[t]
                         else:
                             t_start = time_frame[t]
