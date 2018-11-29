@@ -38,7 +38,7 @@ from fileutils.htk import readHtk
 
 sys.path.append(os.path.expanduser(RNNPATH))
 from RNN import RNN
-from Net import Net
+from Yunitator.Net import Net
 
 
 # ---------------------------------------------------------------------
