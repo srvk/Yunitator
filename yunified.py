@@ -142,7 +142,7 @@ for file in os.listdir(INPUT_DIR):
             #key = os.path.splitext(os.path.basename(YUNITATOR_OUTPUT_FILE))[0]
             with open(OUTPUT_DIR+"/"+filename+".rttm.sorted", 'a') as f:
                 for cls, start, end in zip(cls_ids, starts, ends):
-                    f.write("SPEAKER {} 1 {:.1f} {:.1f} <NA> <NA> {} <NA> <NA> ".format(
+                    f.write("SPEAKER {} 1 {:.1f} {:.1f} <NA> <NA> {} <NA> <NA>\n".format(
                         filename+".rttm", (start+(chunks*HTK_CHUNKSIZE)) * 0.1, (end - start) * 0.1, class_names[cls]))
                 chunks += 1
         
