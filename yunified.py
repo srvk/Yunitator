@@ -200,7 +200,9 @@ for file in os.listdir(INPUT_DIR):
 
                         # get duration of class
                         t_end = time_frame[t]
-                        lab.write(u"{:.1f} {:.1f} {}\n".format(t_start+(0.1*chunks), t_end+(0.1*chunks)), class_names[most_likely[t-1]])
+                        # Choose rttm type label for speech and everything else. This may need to change to fit convention
+                        type_label = "SPEAKER" if class_names[most_likely[t-1]] == 'speech' else "NON-SPEECH"
+                        lab.write(u"{:.1f} {:.1f} {} {}\n".format(t_start+(0.1*chunks), t_end+(0.1*chunks), class_names[most_likely[t-1]], type_label))
                         t_start = time_frame[t]
 
                     new_t = time_frame[t]
