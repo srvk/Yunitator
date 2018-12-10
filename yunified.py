@@ -190,13 +190,19 @@ for file in os.listdir(INPUT_DIR):
 
                     # write class only if it correspond to "speech" !
                     if most_likely[t] != most_likely[t-1] :
-                        if class_names[most_likely[t-1]] == "speech":
-                            # get duration of class
-                            t_end = time_frame[t]
-                            lab.write(u"{:.1f} {:.1f} speech\n".format(t_start+(0.1*chunks), t_end+(0.1*chunks)))
-                            t_start = time_frame[t]
-                        else:
-                            t_start = time_frame[t]
+                        # if class_names[most_likely[t-1]] == "speech":
+                        #     # get duration of class
+                        #     t_end = time_frame[t]
+                        #     lab.write(u"{:.1f} {:.1f} speech\n".format(t_start+(0.1*chunks), t_end+(0.1*chunks)))
+                        #     t_start = time_frame[t]
+                        # else:
+                        #     t_start = time_frame[t]
+
+                        # get duration of class
+                        t_end = time_frame[t]
+                        lab.write(u"{:.1f} {:.1f} {}\n".format(t_start+(0.1*chunks), t_end+(0.1*chunks)), class_names[most_likely[t-1]])
+                        t_start = time_frame[t]
+
                     new_t = time_frame[t]
                 last_t = new_t
                 chunks += 1
