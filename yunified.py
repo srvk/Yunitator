@@ -49,23 +49,37 @@ from Yunitator.Net import Net
 # Script options
 YUNITATOR = 'yunitator'
 NOISEMES = 'noisemes'
+ENGLISH = 'english'
+UNIVERSAL = 'universal'
+OLD = 'old'
 
 # Args
 try:
     SCRIPT = sys.argv[1]  # Which script to run [yunitator, noisemes]
     INPUT_DIR = sys.argv[2].rstrip('/')  # HTK Dir (eg. /vagrant/data/)
     HTK_CHUNKSIZE = int(sys.argv[3])
+    try:
+        MODE = sys.argv[4]  # Which mode tu use [english, universal, old], only used if SCRIPT == YUNITATOR
+    except IndexError:
+        MODE = OLD
 except IndexError:
     print("WRONG NUMBER INPUTS")
     exit()
 
 # Choose Matrix variables
 if SCRIPT == YUNITATOR:
-    PCAMATRIX = 'Yunitator/pca-self.pkl'
-    NNET = 'Yunitator/model.pt'
+    if MODE == OLD:
+        TRANSFMATRIX = 'Yunitator/reductions/pca-old.pkl'         # PCA of size 50
+        NNET = 'Yunitator/models/model-old.pt'
+    elif MODE == ENGLISH:
+        TRANSFMATRIX = 'Yunitator/reductions/pca-english.pkl'      # PCA of size 150
+        NNET = 'Yunitator/models/model-english.pt'
+    elif MODE == UNIVERSAL:
+        TRANSFMATRIX = 'Yunitator/reductions/lda-universal.pkl'    # LDA of size 150
+        NNET = 'Yunitator/models/model-universal.pt'
 elif SCRIPT == NOISEMES:
-    PCAMATRIX = 'OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
-    NNET='OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
+    TRANSFMATRIX = 'OpenSAT/SSSF/code/predict/model/noiseme.old/pca.pkl'
+    NNET = 'OpenSAT/SSSF/code/predict/model/noiseme.old/net.pkl.gz'
 
 # Prepare output directories
 if SCRIPT == YUNITATOR:
@@ -80,10 +94,13 @@ elif SCRIPT == NOISEMES:
 
 # Load neural network
 if SCRIPT == YUNITATOR:
-    net = Net(50, 200, 4) #.cuda()
+    if MODE == OLD:
+        net = Net(50, 200, 4) #.cuda()
+    else:
+        net = Net(150, 200, 4)
     net.load_state_dict(torch.load(NNET, map_location = lambda storage, loc: storage))
 elif SCRIPT == NOISEMES:
-    net = RNN(filename = os.path.expanduser(NNET))
+    net = RNN(filename=os.path.expanduser(NNET))
 
 
 # Get class names
@@ -99,16 +116,20 @@ elif SCRIPT == NOISEMES:
 
 # Load PCA matrix and scaling factors
 if SCRIPT == YUNITATOR:
-    with open(PCAMATRIX, 'rb') as f:
+    with open(TRANSFMATRIX, 'rb') as f:
         data = cPickle.load(f, encoding="latin1")
-    mask, mu, sigma, V, w, b = data['mask'], data['mu'], data['sigma'], data['V'], data['w'], data['b']
+        if MODE == OLD or MODE == ENGLISH:
+            mask, mu, sigma, V, w, b = data['mask'], data['mu'], data['sigma'], data['V'], data['w'], data['b']
+            reductor = lambda feat: ((feat[:, mask] - mu) / sigma).dot(V) * w + b
+        elif MODE == UNIVERSAL:
+            mask, V, mu, sigma = data['mask'], data['V'], data['mu'], data['sigma']
+            reductor = lambda feat: (feat.dot(V)[:, mask] - mu) / sigma
 elif SCRIPT == NOISEMES:
-    with open(os.path.expanduser(PCAMATRIX), 'rb') as f:
+    with open(os.path.expanduser(TRANSFMATRIX), 'rb') as f:
         locals().update(cPickle.load(f, encoding="latin1"))
         with open(os.path.expanduser(SCALINGFACTORS), 'rb') as f:
             w, b = cPickle.load(f, encoding="latin1")
-pca = lambda feat: ((feat[:, mask] - mu) / sigma).dot(V) * w + b
-
+            reductor = lambda feat: ((feat[:, mask] - mu) / sigma).dot(V) * w + b
 
 # These are chunking parameters.
 # ex: HTK_chunksize = 2000
@@ -128,7 +149,7 @@ for file in os.listdir(INPUT_DIR):
     for feat in readHtk(INPUT_DIR+"/"+file, HTK_CHUNKSIZE, preSamples):
 
         if SCRIPT == YUNITATOR:
-            feature = pca(feat)
+            feature = reductor(feat)
             input = Variable(torch.from_numpy(numpy.expand_dims(feature, 0).astype('float32'))) #.cuda()
             input = pack_padded_sequence(input, [len(feature)], batch_first = True)
             output = net(input).data.data.cpu().numpy()
@@ -145,10 +166,8 @@ for file in os.listdir(INPUT_DIR):
                     f.write("SPEAKER {} 1 {:.1f} {:.1f} <NA> <NA> {} <NA> <NA>\n".format(
                         filename+".rttm", (start+(chunks*HTK_CHUNKSIZE)) * 0.1, (end - start) * 0.1, class_names[cls]))
                 chunks += 1
-        
-
         elif SCRIPT == NOISEMES:
-            feature = pca(feat).astype('float32')
+            feature = reductor(feat).astype('float32')
             x = feature.reshape((1,) + feature.shape)
             m = numpy.ones(x.shape[:-1], dtype='int32')
             conf[filename] = net.predict(x, m)[0]
