@@ -14,7 +14,7 @@ def readPfile(filename):
         # Read header
         # Assuming all data are consistent
         for line in f:
-            tokens = line.split()
+            tokens = line.decode().split()
             if tokens[0] == "-pfile_header":
                 headerSize = int(tokens[4])
             elif tokens[0] == "-num_sentences":
@@ -45,7 +45,7 @@ def readPfile(filename):
         features = []
         labels = []
         sen = 0
-        for i in xrange(nFrames):
+        for i in range(nFrames):
             if i == index[sen]:
                 features.append([])
                 labels.append([])
@@ -57,6 +57,9 @@ def readPfile(filename):
         labels = [numpy.array(x) for x in labels] if nLabels > 0 else None
 
     return (features, labels)
+
+def writeBytes(f, string):
+	f.write(string.encode())
 
 def writePfile(filename, features, labels = None):
     """
@@ -77,26 +80,26 @@ def writePfile(filename, features, labels = None):
 
     with smart_open(filename, "wb") as f:
         # Write header
-        f.write("-pfile_header version 0 size %d\n" % headerSize)
-        f.write("-num_sentences %d\n" % nSentences)
-        f.write("-num_frames %d\n" % nFrames)
-        f.write("-first_feature_column 2\n")
-        f.write("-num_features %d\n" % nFeatures)
-        f.write("-first_label_column %d\n" % (2 + nFeatures))
-        f.write("-num_labels %d\n" % nLabels)
-        f.write("-format dd" + "f" * nFeatures + "d" * nLabels + "\n")
-        f.write("-data size %d offset 0 ndim 2 nrow %d ncol %d\n" % (dataSize, nFrames, nCols))
-        f.write("-sent_table_data size %d offset %d ndim 1\n" % (nSentences + 1, dataSize))
-        f.write("-end\n")
+        writeBytes(f, "-pfile_header version 0 size %d\n" % headerSize)
+        writeBytes(f, "-num_sentences %d\n" % nSentences)
+        writeBytes(f, "-num_frames %d\n" % nFrames)
+        writeBytes(f, "-first_feature_column 2\n")
+        writeBytes(f, "-num_features %d\n" % nFeatures)
+        writeBytes(f, "-first_label_column %d\n" % (2 + nFeatures))
+        writeBytes(f, "-num_labels %d\n" % nLabels)
+        writeBytes(f, "-format dd" + "f" * nFeatures + "d" * nLabels + "\n")
+        writeBytes(f, "-data size %d offset 0 ndim 2 nrow %d ncol %d\n" % (dataSize, nFrames, nCols))
+        writeBytes(f, "-sent_table_data size %d offset %d ndim 1\n" % (nSentences + 1, dataSize))
+        writeBytes(f, "-end\n")
 
         # Write data
         f.seek(headerSize)
-        for i in xrange(nSentences):
-            for j in xrange(len(features[i])):
+        for i in range(nSentences):
+            for j in range(len(features[i])):
                 f.write(struct.pack(">2i", i, j))
                 f.write(struct.pack(">%df" % nFeatures, *numpy.array(features[i][j]).ravel()))
                 if labels is not None:
-                    f.write(struct.pack(">%di" % nLabels, *numpy.array(labels[i][j]).ravel()))
+                    f.write(struct.pack(">%di" % nLabels, *numpy.array(labels[i][j].astype(int)).ravel()))
 
         # Write sentence index
         index = numpy.cumsum([0] + [len(x) for x in features])

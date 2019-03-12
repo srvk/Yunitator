@@ -18,7 +18,7 @@ def timing (dt):
         u = resource.getrusage(resource.RUSAGE_SELF).ru_utime + resource.getrusage(resource.RUSAGE_CHILDREN).ru_utime
         s = resource.getrusage(resource.RUSAGE_SELF).ru_stime + resource.getrusage(resource.RUSAGE_CHILDREN).ru_stime
         t = (datetime.datetime.now()-dt).replace(microsecond=0)
-        print "Elapsed Time", t, 'with {:.1f}% user'.format(u/t.total_seconds()*100), 'and {:.1f}% system'.format(s/t.total_seconds()*100)
+        print("Elapsed Time", t, 'with {:.1f}% user'.format(u/t.total_seconds()*100), 'and {:.1f}% system'.format(s/t.total_seconds()*100))
 
 
 # ---------------------------------------------------
@@ -28,7 +28,7 @@ def timing (dt):
 def filterFeatures(fileSet,outpath,index):
 	#load the indices
 	column_indices = open(index).readline().rstrip("\n").split(",")
-	print "Reducing to "+str(len(column_indices))+" dimensions"
+	print("Reducing to "+str(len(column_indices))+" dimensions")
 
 	#start filtering each of the files in the list
 	outputSet = ()
@@ -123,7 +123,7 @@ def compress_file (in_file, mode='bz2'):
                 gzf.close()
 
         except Exception as e:
-                print "Something went wrong compressing ", in_file
+                print("Something went wrong compressing ", in_file)
 
         else:
                 os.remove (in_file)
@@ -159,21 +159,21 @@ def outputList (output, max_dict, min_dict):
 # ---------------------------------------------------
 
 def qsub(script):
-	print script
+	print(script)
 	script = os.path.abspath(script)
 	rootdir = os.path.dirname(script)
 	queue = 'standard'
 	QSUB="qsub -j eo -S /bin/bash -o "+rootdir+" -l nodes=1:ppn=1 -q "+ queue +" -d " + rootdir + " " +script
-	print "Executing "+QSUB
+	print("Executing "+QSUB)
 	os.system(QSUB)
 	return
 
 
 def dispatchParMap (function, list, *args):
         if os.environ.get('PBS_NUM_PPN') is None:
-                print 'Simulating ParMap: Len=', len (list)
+                print('Simulating ParMap: Len=', len (list))
                 return [function (wavFile, *args) for wavFile in list]
         else:
                 np = int(os.environ.get('PBS_NUM_PPN'))
-                print 'Executing ParMap: Len=', len (list), 'NP=', np
+                print('Executing ParMap: Len=', len (list), 'NP=', np)
                 return parmap.map (function, list, *args, processes=np)
