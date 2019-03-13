@@ -11,12 +11,6 @@ class Net(nn.Module):
 
         self.gru = nn.GRU(nInput, nHidden, nLayers, bidirectional = True)
         self.fc = nn.Linear(nHidden * 2, nOutput) # Bidirectional, so the size of the output is 2*nHidden
-        # Xavier Glorot initialization
-        nn.init.orthogonal_(self.gru.weight_ih_l0); nn.init.constant_(self.gru.bias_ih_l0, 0)
-        nn.init.orthogonal_(self.gru.weight_hh_l0); nn.init.constant_(self.gru.bias_hh_l0, 0)
-        nn.init.orthogonal_(self.gru.weight_ih_l0_reverse); nn.init.constant_(self.gru.bias_ih_l0_reverse, 0)
-        nn.init.orthogonal_(self.gru.weight_hh_l0_reverse); nn.init.constant_(self.gru.bias_hh_l0_reverse, 0)
-        nn.init.xavier_uniform_(self.fc.weight); nn.init.constant_(self.fc.bias, 0)
 
     def forward(self, x):
         # Returns log probabilities
