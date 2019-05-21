@@ -17,6 +17,7 @@ def readHtk(filename, chunk_size=None, preSamples=None):
         with smart_open(filename, "rb") as f:
             nSamples, sampPeriod, sampSize, parmKind = struct.unpack(">iihh", f.read(12))
             assert nSamples > 0, "nSamples needs to be > 0"
+            assert sampSize > 0, "sampSize needs to be > 0"
 
             # If the size of the features is less than the chunk size.
             if nSamples < chunk_size:
