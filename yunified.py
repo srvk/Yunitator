@@ -151,12 +151,15 @@ elif SCRIPT == NOISEMES:
 for file in os.listdir(INPUT_DIR):
     # Load input feature and predict
     filename, extension = os.path.splitext(os.path.split(file)[1])
+    if extension != ".htk":
+        print("Ignoring "+os.path.join(INPUT_DIR, file))
+        continue
     conf = {}
 
     # noisemes needs a variable to remember the last timestep when chunking
     last_t = 0  
     chunks = 0
-    for feat in readHtk(INPUT_DIR+"/"+file, HTK_CHUNKSIZE, preSamples):
+    for feat in readHtk(os.path.join(INPUT_DIR,file), HTK_CHUNKSIZE, preSamples):
         if SCRIPT == YUNITATOR:
             feature = reductor(feat)
             input = Variable(torch.from_numpy(numpy.expand_dims(feature, 0).astype('float32')))
@@ -170,6 +173,7 @@ for file in os.listdir(INPUT_DIR):
             _, ends = (output[:, :-1] & ~output[:, 1:]).nonzero()
 
             with open(OUTPUT_DIR+"/"+filename+".rttm.sorted", 'a') as f:
+                #print("Feature shape "+str(feat.shape))
                 for cls, start, end in zip(cls_ids, starts, ends):
                     print("%s\t%s\t%s" % (cls,start,end))
                     f.write("SPEAKER {} 1 {:.1f} {:.1f} <NA> <NA> {} <NA> <NA>\n".format(

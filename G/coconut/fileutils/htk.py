@@ -21,7 +21,7 @@ def readHtk(filename, chunk_size=None, preSamples=None):
 
             # If the size of the features is less than the chunk size.
             if nSamples < chunk_size:
-                chunk_size = nSamples
+                chunk_size = nSamples+1
 
             # Iterate over all full chunks first.
             for i in range(nSamples // chunk_size):
@@ -29,11 +29,11 @@ def readHtk(filename, chunk_size=None, preSamples=None):
                 # but only after the first one.
                 if i == 0:
                     readSize = chunk_size * sampSize
-                    dataSize = readSize / 4
+                    dataSize = readSize // 4
                     outputSize = chunk_size
                 else:
                     readSize = (chunk_size + preSamples) * sampSize
-                    dataSize = readSize / 4
+                    dataSize = readSize // 4
                     outputSize = chunk_size + preSamples
 
                 data = struct.unpack(">%df" % (dataSize), f.read(readSize))
