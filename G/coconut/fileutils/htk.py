@@ -21,7 +21,7 @@ def readHtk(filename, chunk_size=None, preSamples=None):
 
             # If the size of the features is less than the chunk size.
             if nSamples < chunk_size:
-                chunk_size = nSamples+1
+                chunk_size = nSamples
 
             # Iterate over all full chunks first.
             for i in range(nSamples // chunk_size):
@@ -45,7 +45,7 @@ def readHtk(filename, chunk_size=None, preSamples=None):
 
             # Whatever remains after the last full chunk size.
             chunk_size = nSamples - (chunk_size * (nSamples // chunk_size)) + preSamples
-            if chunk_size > 0:
+            if chunk_size > preSamples:
                 data = struct.unpack(">%df" % (chunk_size * sampSize / 4), f.read(chunk_size * sampSize))
                 yield numpy.array(data).reshape(chunk_size, sampSize // 4)
     else:
