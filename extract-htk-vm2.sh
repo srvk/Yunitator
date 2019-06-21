@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Use OpenSMILE 2.1.0 only
 
 if [ $# -lt 1 ]; then
@@ -23,7 +25,7 @@ id=`basename $file`
 echo "Extracting features for $id ..."
 id=${id%.wav}
 
-nosplit=1000
+nosplit=1200
 duration=`soxi -D $file|awk '{print int($1)}'`
 if [ $duration -gt $nosplit ]; then
     # If the audio file is longer than about 15 minutes, let's
